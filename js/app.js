@@ -97,8 +97,28 @@
   }
   function adSlotHTML(cfg, kind) {
     if (!cfg) return '';
+    var az = AD.adsterra || {};
+    if (az.enabled && az.embed && (az.position || 'preroll') === 'preroll' && kind === 'preroll') {
+      return az.embed;
+    }
     if ((AD.mode || 'demo') !== 'demo' && cfg.html) return cfg.html;
     return demoCreativeHTML(kind);
+  }
+  function injectHTMLWithScripts(container, html) {
+    var wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    var kids = Array.prototype.slice.call(wrap.childNodes);
+    container.innerHTML = '';
+    kids.forEach(function (n) {
+      if (n.nodeType === 1 && n.tagName && n.tagName.toLowerCase() === 'script') {
+        var s = document.createElement('script');
+        if (n.src) { s.src = n.src; s.async = true; }
+        else { s.textContent = n.textContent; }
+        container.appendChild(s);
+      } else {
+        container.appendChild(n);
+      }
+    });
   }
   function bannerAdHTML(pos) {
     var b = AD.banner || {};
@@ -921,7 +941,9 @@
     var stage = overlay.querySelector('.ad-stage');
     var countEl = overlay.querySelector('.ad-countdown');
     var skip = overlay.querySelector('.ad-skip');
-    stage.innerHTML = adSlotHTML(cfg, 'preroll');
+    var adHtml = adSlotHTML(cfg, 'preroll');
+    if (adHtml.indexOf('<script') !== -1) injectHTMLWithScripts(stage, adHtml);
+    else stage.innerHTML = adHtml;
     var dur = Math.max(1, parseInt(cfg.duration, 10) || 5);
     var left = dur;
     countEl.textContent = 'Iklan · ' + left + ' dtk';
