@@ -1050,10 +1050,12 @@
       }
       var frr = fr.getBoundingClientRect(), vr = v.getBoundingClientRect();
       if (vr.width === 0 || vr.height === 0) return;
-      // Mobil portrait (layar tegak): blur dihapus supaya video katon cetha
+      // Mobil portrait (layar tegak): blur tipis ing nduwur (15-20%) + gradasi alus
       if (frr.height > frr.width) {
-        topEl.style.display = 'none';
-        botEl.style.display = 'none';
+        topEl.style.display = '';
+        botEl.style.display = '';
+        topEl.style.height = Math.round(frr.height * 0.18) + 'px'; topEl.style.top = '0px';
+        botEl.style.height = Math.round(frr.height * 0.1) + 'px'; botEl.style.top = '';
         return;
       }
       var minH = Math.round(window.innerHeight * 0.13);

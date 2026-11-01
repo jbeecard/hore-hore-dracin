@@ -193,8 +193,8 @@ video.video{width:100%;height:100%;display:block}
 /* ---------- Blur watermark (banner nduwur + logo ngisor) ---------- */
 .pv-water{position:absolute;inset:0;z-index:6;pointer-events:none}
 .wm-band{position:absolute;left:0;right:0;background:rgba(8,10,16,.32);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);transition:opacity .2s}
-.wm-top{top:0;height:52px}
-.wm-bottom{bottom:0;height:56px}
+.wm-top{top:0;height:52px;background:linear-gradient(to bottom, rgba(8,10,16,.6), rgba(8,10,16,.12));-webkit-mask-image:linear-gradient(to bottom,#000 30%,transparent);mask-image:linear-gradient(to bottom,#000 30%,transparent)}
+.wm-bottom{bottom:0;height:56px;background:linear-gradient(to top, rgba(8,10,16,.6), rgba(8,10,16,.12));-webkit-mask-image:linear-gradient(to top,#000 30%,transparent);mask-image:linear-gradient(to top,#000 30%,transparent)}
 .wm-off .wm-band{opacity:0}
 
 /* ---------- Subtitle overlay (di nduwur blur) ---------- */
@@ -263,11 +263,11 @@ video.video{width:100%;height:100%;display:block}
   /* Pengaman: sadurunge fullscreen blur tetep cilik */
   #pvFrame:not(:fullscreen) .wm-top,
   #pvFrame:not(:fullscreen) .wm-bottom{height:10vh !important}
-  /* Fullscreen mobile portrait: blur dihapus supaya video tetep katon */
-  #pvFrame:fullscreen .wm-top,
-  #pvFrame:fullscreen .wm-bottom{display:none !important}
-  #pvFrame:-webkit-full-screen .wm-top,
-  #pvFrame:-webkit-full-screen .wm-bottom{display:none !important}
+  /* Fullscreen mobile portrait: blur tipis nduwur (15-20%) biar alus */
+  #pvFrame:fullscreen .wm-top{height:18vh}
+  #pvFrame:fullscreen .wm-bottom{height:10vh}
+  #pvFrame:-webkit-full-screen .wm-top{height:18vh}
+  #pvFrame:-webkit-full-screen .wm-bottom{height:10vh}
   .sub-overlay{bottom:12%;font-size:clamp(12px,2.6vw,16px)}
   .player-controls{gap:8px}
 }
