@@ -960,7 +960,7 @@
     h += '</div>';
     h += '<div class="video-frame" id="pvFrame">';
     h += '<video id="pvVid" class="video" playsinline preload="metadata"></video>';
-    h += '<div id="pvWater" class="pv-water"><div class="wm-band wm-top"></div><div class="wm-band wm-bottom"></div></div>';
+    h += '<div id="pvWater" class="pv-water"><div class="wm-band wm-top" id="pvWmTop"></div><div class="wm-band wm-bottom" id="pvWmBot"></div></div>';
     h += '<div id="pvSub" class="sub-overlay hidden"></div>';
     h += '<div id="pvLoader" class="loader"><span class="spinner"></span><span>Muat video…</span></div>';
     h += '<p id="pvMsg" class="player-msg hidden"></p>';
@@ -1039,17 +1039,41 @@
       });
     }
     var fsBtn = $('pvFs');
+    function setupWmAlign() {
+      var fr = $('pvFrame'), v = $('pvVid'), topEl = $('pvWmTop'), botEl = $('pvWmBot');
+      if (!fr || !v || !topEl || !botEl) return;
+      var inFs = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!inFs) {
+        topEl.style.height = ''; topEl.style.top = '';
+        botEl.style.height = ''; botEl.style.top = '';
+        return;
+      }
+      var frr = fr.getBoundingClientRect(), vr = v.getBoundingClientRect();
+      if (vr.width === 0 || vr.height === 0) return;
+      var minH = Math.round(window.innerHeight * 0.13);
+      var topH = Math.max(minH, Math.round(vr.top - frr.top + 18));
+      var botTop = Math.max(0, Math.round(vr.bottom - frr.top - 18));
+      var botH = Math.max(minH, Math.round(frr.height - botTop));
+      topEl.style.height = topH + 'px'; topEl.style.top = '0px';
+      botEl.style.top = botTop + 'px'; botEl.style.height = botH + 'px';
+    }
+    if (!window._hhWmBound) {
+      window._hhWmBound = true;
+      document.addEventListener('fullscreenchange', setupWmAlign);
+      window.addEventListener('resize', setupWmAlign);
+    }
     if (fsBtn) fsBtn.addEventListener('click', function () {
       var fr = $('pvFrame');
       if (!fr) return;
       if (document.fullscreenElement) { document.exitFullscreen().catch(function () {}); return; }
       if (fr.requestFullscreen) {
-        fr.requestFullscreen().catch(function () {
+        fr.requestFullscreen().then(function () { setTimeout(setupWmAlign, 250); }).catch(function () {
           var v = $('pvVid');
           if (v && v.requestFullscreen) v.requestFullscreen().catch(function () {});
         });
       } else if (fr.webkitRequestFullscreen) {
         fr.webkitRequestFullscreen();
+        setTimeout(setupWmAlign, 250);
       }
     });
     trackHistory(videoEl, slug, Number(ep));
