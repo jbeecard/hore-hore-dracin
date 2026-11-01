@@ -1,0 +1,40 @@
+# Netlify config — Hore-Hore Dracin v2
+[build]
+  publish = "."
+  functions = "functions"
+  command = "echo static-site"
+
+# API/playback -> Netlify Functions
+[[redirects]]
+  from = "/proxy/narto-playback"
+  to = "/.netlify/functions/narto-playback"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/proxy/playback"
+  to = "/.netlify/functions/dracin-playback"
+  status = 200
+  force = true
+
+# SPA fallback (harus paling bawah)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Cache asset statis
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=600"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=600"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"

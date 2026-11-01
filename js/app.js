@@ -800,6 +800,35 @@
   }
   function failMsg(t) { hideLoader(); setPlayerMsg(t); }
 
+  function playDirectNarto(video, url, isMp4) {
+    cleanupVideo(video);
+    if (isMp4 || !/\.m3u8([?#]|$)/i.test(url)) {
+      video.src = url;
+      video.load();
+      video.play().catch(function () {});
+      return;
+    }
+    if (window.Hls) {
+      var hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+      hls.on(Hls.Events.ERROR, function (evt, data) {
+        if (data && data.fatal) {
+          if (data.type === 'networkError') { hls.startLoad(); }
+          else if (data.type === 'mediaError') { hls.recoverMediaError(); }
+          else { setPlayerMsg('HLS gagal dimuat (' + (data.details || data.type || '') + ').'); }
+        }
+      });
+      video._hls = hls;
+      hls.loadSource(url);
+      hls.attachMedia(video);
+      video.play().catch(function () {});
+    } else if (video.canPlayType && video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
+      video.play().catch(function () {});
+    } else {
+      setPlayerMsg('Browser ora ndukung HLS.');
+    }
+  }
+
   function loadNartoPlayback(slug, ep, attempt) {
     attempt = attempt || 0;
     var video = $('pvVid'), qSel = $('pvQuality');
@@ -822,11 +851,11 @@
         var o = document.createElement('option'); o.value = '0'; o.textContent = j.isMp4 ? 'MP4 · Full' : 'HLS (otomatis)';
         qSel.appendChild(o); qSel.disabled = true;
         if (j.subtitleUrl) {
-          fetch(proxyUrl(j.subtitleUrl)).then(function (r) { return r.text(); }).then(function (vtt) {
+          fetch(j.subtitleUrl).then(function (r) { return r.text(); }).then(function (vtt) {
             attachSubtitles(video, vtt);
           }).catch(function () {});
         }
-        setupVideo(video, j.url);
+        playDirectNarto(video, j.url, !!j.isMp4);
         watchPlay(video);
         setPlayerMsg('');
       })

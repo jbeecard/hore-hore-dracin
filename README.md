@@ -23,6 +23,23 @@ Regenerasi katalog setelah mengubah `data/source-raw.js`:
 node tools/build-catalog.js
 ```
 
+## Deploy ke Netlify
+Proyek sudah disiapkan untuk Netlify:
+- `netlify.toml` — build static (publish: `.`), redirect SPA, & redirect ke Functions.
+- `functions/narto-playback.js` — endpoint playback Narto (full episode).
+- `functions/dracin-playback.js` — endpoint playback Dracinema (fallback).
+
+Langkah:
+1. Push repo ke GitHub (sudah).
+2. Di Netlify: **Add new site → Import from Git → pilih `jbeecard/hore-hore-dracin`**.
+3. Build settings otomatis terbaca dari `netlify.toml` (tidak perlu isi build command).
+4. Deploy. Site dapat diakses di `https://<nama>.netlify.app`.
+5. (Opsional) ganti domain kustom di **Domain settings**.
+
+Catatan:
+- Video diputar **langsung dari CDN Narto** (CORS `*`), jadi tidak perlu proxy media di sisi server.
+- Endpoint `/proxy/narto-playback` diarahkan ke Function; di local dev tetap memakai `server.js`.
+
 ## Struktur
 ```
 index.html                shell SPA
