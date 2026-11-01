@@ -187,6 +187,8 @@ video.video{width:100%;height:100%;display:block}
 .auto-next-count{color:var(--muted);font-size:.8rem}
 .player-sub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
 .player-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.player-seek{flex:1;min-width:90px;accent-color:var(--brand);height:26px;cursor:pointer}
+.player-time{font-variant-numeric:tabular-nums}
 
 /* ---------- Blur watermark (banner nduwur + logo ngisor) ---------- */
 .pv-water{position:absolute;inset:0;z-index:6;pointer-events:none}
@@ -256,9 +258,9 @@ video.video{width:100%;height:100%;display:block}
 @media (max-width:600px) and (orientation:portrait){
   .player-card{padding:12px}
   .video-frame{aspect-ratio:auto;height:48vh}
-  .wm-top{height:38px}
-  .wm-bottom{height:42px}
-  .sub-overlay{bottom:14%;font-size:clamp(12px,2.6vw,16px)}
+  .wm-top{height:10vh}
+  .wm-bottom{height:10vh}
+  .sub-overlay{bottom:12%;font-size:clamp(12px,2.6vw,16px)}
   .player-controls{gap:8px}
 }
 @media (max-width:560px){

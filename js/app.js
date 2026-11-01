@@ -959,7 +959,7 @@
     h += '<div class="detail-meta"><span class="badge brand">' + esc(d ? d.provider : '') + '</span><span class="badge gold">🎁 Gratis · Episode ' + ep + ' / ' + (eps || '?') + '</span></div>';
     h += '</div>';
     h += '<div class="video-frame" id="pvFrame">';
-    h += '<video id="pvVid" class="video" controls playsinline preload="metadata"></video>';
+    h += '<video id="pvVid" class="video" playsinline preload="metadata"></video>';
     h += '<div id="pvWater" class="pv-water"><div class="wm-band wm-top"></div><div class="wm-band wm-bottom"></div></div>';
     h += '<div id="pvSub" class="sub-overlay hidden"></div>';
     h += '<div id="pvLoader" class="loader"><span class="spinner"></span><span>Muat video…</span></div>';
@@ -972,7 +972,9 @@
     h += '</div>';
     h += '<div class="player-controls">';
     h += '<label class="badge" style="cursor:pointer"><input type="checkbox" id="pvAutoToggle" checked> Auto-next</label>';
-    h += '<label class="badge" style="cursor:pointer"><input type="checkbox" id="pvWm" checked> Kaburake logo</label>';
+    h += '<button type="button" class="btn btn-ghost btn-sm" id="pvPlay">▶</button>';
+    h += '<input type="range" id="pvSeek" class="player-seek" min="0" max="1000" value="0" aria-label="Seek">';
+    h += '<span class="badge player-time" id="pvTime">0:00 / 0:00</span>';
     h += '<span class="badge">Kualitas:</span><select id="pvQuality" class="sel"></select>';
     h += '<button type="button" class="btn btn-ghost btn-sm" id="pvFs">⛶ Layar penuh</button>';
     h += (ep > 1 ? '<a class="btn btn-ghost btn-sm" href="#/play/' + encodeSlug(slug) + '/' + (ep - 1) + '">‹ Sebelumnya</a>' : '');
@@ -993,8 +995,36 @@
     if (cancelBtn) cancelBtn.addEventListener('click', function () { cancelAutoNext(videoEl); });
     var tog = $('pvAutoToggle');
     if (tog) tog.addEventListener('change', function () { if (videoEl._autoCtx) videoEl._autoCtx.enabled = tog.checked; });
-    var wm = $('pvWm');
-    if (wm) wm.addEventListener('change', function () { if (frame) frame.classList.toggle('wm-off', !wm.checked); });
+    var playBtn = $('pvPlay'), seek = $('pvSeek'), timeEl = $('pvTime');
+    function fmtT(s) {
+      s = Math.floor(s || 0);
+      if (!isFinite(s)) return '0:00';
+      var m = Math.floor(s / 60), ss = s % 60;
+      return m + ':' + (ss < 10 ? '0' : '') + ss;
+    }
+    function syncPlayerUi() {
+      if (!videoEl) return;
+      var d = videoEl.duration || 0, t = videoEl.currentTime || 0;
+      if (seek) {
+        var max = Math.max(1000, Math.round(d * 1000));
+        seek.max = max;
+        seek.value = Math.min(Math.round(t * 1000), max);
+      }
+      if (timeEl) timeEl.textContent = fmtT(t) + ' / ' + fmtT(d);
+      if (playBtn) playBtn.textContent = videoEl.paused ? '▶' : '⏸';
+    }
+    videoEl.addEventListener('timeupdate', syncPlayerUi);
+    videoEl.addEventListener('play', syncPlayerUi);
+    videoEl.addEventListener('pause', syncPlayerUi);
+    videoEl.addEventListener('loadedmetadata', syncPlayerUi);
+    videoEl.addEventListener('ended', syncPlayerUi);
+    if (playBtn) playBtn.addEventListener('click', function () {
+      if (videoEl.paused) videoEl.play().catch(function () {}); else videoEl.pause();
+    });
+    if (seek) seek.addEventListener('input', function () {
+      var d = videoEl.duration || 0;
+      if (d > 0) videoEl.currentTime = (parseInt(seek.value, 10) / 1000) * d;
+    });
     if (!window._hhFsBound) {
       window._hhFsBound = true;
       document.addEventListener('fullscreenchange', function () {
