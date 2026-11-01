@@ -177,7 +177,8 @@ video.video{width:100%;height:100%;display:block}
 .demo-ad-sub{color:var(--subtle);font-size:.8rem;max-width:46ch}
 .banner-ad-wrap{max-width:1280px;margin:18px auto 0;padding:0 clamp(12px,3vw,28px)}
 .banner-ad-wrap.banner-footer{text-align:center;margin:24px auto 0}
-.banner-ad-wrap.banner-footer > *{display:inline-block;margin:0 auto}
+.banner-ad-wrap.banner-footer > :not(script){display:inline-block;margin:0 auto}
+.banner-ad-wrap.banner-footer script{display:none}
 .banner-ad-wrap .ad-creative{min-height:110px;width:100%;flex-direction:row;gap:16px}
 
 /* Mobile: batasi area iklan + pindah tombol skip supaya ora kehalang */
