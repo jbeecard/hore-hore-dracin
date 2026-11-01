@@ -1051,8 +1051,8 @@
       var frr = fr.getBoundingClientRect(), vr = v.getBoundingClientRect();
       if (vr.width === 0 || vr.height === 0) return;
       var minH = Math.round(window.innerHeight * 0.13);
-      var topH = Math.max(minH, Math.round(vr.top - frr.top + 18));
-      var botTop = Math.max(0, Math.round(vr.bottom - frr.top - 18));
+      var topH = Math.max(minH, Math.round(vr.top - frr.top + vr.height * 0.20));
+      var botTop = Math.max(0, Math.round(vr.bottom - frr.top - vr.height * 0.12));
       var botH = Math.max(minH, Math.round(frr.height - botTop));
       topEl.style.height = topH + 'px'; topEl.style.top = '0px';
       botEl.style.top = botTop + 'px'; botEl.style.height = botH + 'px';
