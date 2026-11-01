@@ -204,7 +204,9 @@
     var tags = (TAX.tags || []).slice(0, 14).map(function (t) {
       return '<a class="tag-chip" href="#/browse?tag=' + encodeURIComponent(t.key) + '">#' + esc(t.label) + '</a>';
     }).join('');
-    return '<footer class="site-footer"><div class="footer-inner">'
+    var bannerHtml = bannerAdHTML('above-footer');
+    return (bannerHtml ? '<div class="banner-ad-wrap banner-footer" id="bannerFooter">' + bannerHtml + '</div>' : '')
+      + '<footer class="site-footer"><div class="footer-inner">'
       + '<div class="footer-col"><h4>Hore-Hore Dracin</h4>'
       + '<p class="muted" style="line-height:1.7">Portal nonton drama pendek gratis — tanpa langganan, tanpa kunci. Penonton cukup membantu dengan menonton iklan singkat sebelum episode diputar.</p>'
       + '<div class="stats-row">'
@@ -227,6 +229,15 @@
   function renderShell() {
     $('navMount').innerHTML = navbarHTML();
     $('footerMount').innerHTML = footerHTML();
+    var bannerFooter = $('bannerFooter');
+    if (bannerFooter) {
+      var b = AD.banner || {};
+      var bh = adSlotHTML(b, 'banner');
+      if (bh.indexOf('<script') !== -1) {
+        bannerFooter.innerHTML = '';
+        injectHTMLWithScripts(bannerFooter, bh);
+      }
+    }
     var navQ = $('navQ');
     if (navQ) navQ.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {

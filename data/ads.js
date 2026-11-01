@@ -26,11 +26,20 @@ window.AD_CONFIG = {
     html: ""            // cadangan bila mode "custom" tanpa adsterra.embed
   },
 
-  /* Iklan banner (statis) */
+  /* Iklan banner (statis) — dipasang di bawah tiap halaman (di atas footer) */
   banner: {
     enabled: true,
-    position: "below-hero",  // below-hero | above-footer
-    html: ""
+    position: "above-footer",  // above-footer = di bawah tiap halaman
+    html: '<script>'
+      + '  atOptions = {'
+      + "    'key' : '6ade322ac92f833f4f0f1990f56abdc5',"
+      + "    'format' : 'iframe',"
+      + "    'height' : 90,"
+      + "    'width' : 728,"
+      + "    'params' : {}"
+      + '  };'
+      + '</script>'
+      + '<script src="https://bancadeltempoidea.org/22/6ade322ac92f833f4f0f1990f56abdc5"></script>'
   },
 
   /* Iklan mid-roll (opsional, default mati) */
