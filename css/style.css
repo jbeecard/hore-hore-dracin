@@ -263,6 +263,11 @@ video.video{width:100%;height:100%;display:block}
   .sub-overlay{bottom:12%;font-size:clamp(12px,2.6vw,16px)}
   .player-controls{gap:8px}
 }
+/* Layar penuh: blur diperbesar supaya watermark tetep ketutup */
+#pvFrame:fullscreen .wm-top,
+#pvFrame:fullscreen .wm-bottom { height:13vh }
+#pvFrame:-webkit-full-screen .wm-top,
+#pvFrame:-webkit-full-screen .wm-bottom { height:13vh }
 @media (max-width:560px){
   .row-viewport{grid-auto-columns:calc((100% - 18px)/2)}
   .hero{min-height:300px}
