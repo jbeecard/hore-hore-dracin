@@ -974,6 +974,7 @@
     h += '<label class="badge" style="cursor:pointer"><input type="checkbox" id="pvAutoToggle" checked> Auto-next</label>';
     h += '<label class="badge" style="cursor:pointer"><input type="checkbox" id="pvWm" checked> Kaburake logo</label>';
     h += '<span class="badge">Kualitas:</span><select id="pvQuality" class="sel"></select>';
+    h += '<button type="button" class="btn btn-ghost btn-sm" id="pvFs">⛶ Layar penuh</button>';
     h += (ep > 1 ? '<a class="btn btn-ghost btn-sm" href="#/play/' + encodeSlug(slug) + '/' + (ep - 1) + '">‹ Sebelumnya</a>' : '');
     h += (ep < eps ? '<a class="btn btn-primary btn-sm" href="#/play/' + encodeSlug(slug) + '/' + (ep + 1) + '">Berikutnya ›</a>' : '');
     h += '</div>';
@@ -994,6 +995,33 @@
     if (tog) tog.addEventListener('change', function () { if (videoEl._autoCtx) videoEl._autoCtx.enabled = tog.checked; });
     var wm = $('pvWm');
     if (wm) wm.addEventListener('change', function () { if (frame) frame.classList.toggle('wm-off', !wm.checked); });
+    if (!window._hhFsBound) {
+      window._hhFsBound = true;
+      document.addEventListener('fullscreenchange', function () {
+        var fe = document.fullscreenElement;
+        var fr = $('pvFrame');
+        if (fe && fe.id === 'pvVid' && fr) {
+          document.exitFullscreen().catch(function () {});
+          setTimeout(function () {
+            if (!document.fullscreenElement && fr.requestFullscreen) fr.requestFullscreen().catch(function () {});
+          }, 150);
+        }
+      });
+    }
+    var fsBtn = $('pvFs');
+    if (fsBtn) fsBtn.addEventListener('click', function () {
+      var fr = $('pvFrame');
+      if (!fr) return;
+      if (document.fullscreenElement) { document.exitFullscreen().catch(function () {}); return; }
+      if (fr.requestFullscreen) {
+        fr.requestFullscreen().catch(function () {
+          var v = $('pvVid');
+          if (v && v.requestFullscreen) v.requestFullscreen().catch(function () {});
+        });
+      } else if (fr.webkitRequestFullscreen) {
+        fr.webkitRequestFullscreen();
+      }
+    });
     trackHistory(videoEl, slug, Number(ep));
     var frame = $('pvFrame');
     startPreroll(frame, function () { loadPlayback(slug, Number(ep)); });
