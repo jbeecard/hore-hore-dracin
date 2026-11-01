@@ -1044,17 +1044,16 @@
       if (!fr || !v || !topEl || !botEl) return;
       var inFs = document.fullscreenElement || document.webkitFullscreenElement;
       if (!inFs) {
-        topEl.style.height = ''; topEl.style.top = '';
-        botEl.style.height = ''; botEl.style.top = '';
+        topEl.style.height = ''; topEl.style.top = ''; topEl.style.display = '';
+        botEl.style.height = ''; botEl.style.top = ''; botEl.style.display = '';
         return;
       }
       var frr = fr.getBoundingClientRect(), vr = v.getBoundingClientRect();
       if (vr.width === 0 || vr.height === 0) return;
-      // Mobil portrait (layar tegak): tutup tipis wae, ojo nutup layar
+      // Mobil portrait (layar tegak): blur dihapus supaya video katon cetha
       if (frr.height > frr.width) {
-        var thin = Math.round(frr.height * 0.1);
-        topEl.style.height = thin + 'px'; topEl.style.top = '0px';
-        botEl.style.height = thin + 'px'; botEl.style.top = '';
+        topEl.style.display = 'none';
+        botEl.style.display = 'none';
         return;
       }
       var minH = Math.round(window.innerHeight * 0.13);
