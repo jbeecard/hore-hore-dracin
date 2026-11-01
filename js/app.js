@@ -120,6 +120,16 @@
       }
     });
   }
+  function initSocialBar() {
+    if (window._hhSbBound) return;
+    var sb = AD.socialbar || {};
+    if (!sb.enabled || !sb.code) return;
+    var s = document.createElement('script');
+    s.setAttribute('data-cfasync', 'false');
+    s.src = sb.code;
+    document.body.appendChild(s);
+    window._hhSbBound = true;
+  }
   function bannerAdHTML(pos) {
     var b = AD.banner || {};
     if (!b.enabled || (b.position || 'below-hero') !== pos) return '';
@@ -1140,6 +1150,7 @@
     renderHome();
   }
   window.addEventListener('hashchange', route);
+  initSocialBar();
   renderShell();
   route();
 })();
