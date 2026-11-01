@@ -1050,6 +1050,13 @@
       }
       var frr = fr.getBoundingClientRect(), vr = v.getBoundingClientRect();
       if (vr.width === 0 || vr.height === 0) return;
+      // Mobil portrait (layar tegak): tutup tipis wae, ojo nutup layar
+      if (frr.height > frr.width) {
+        var thin = Math.round(frr.height * 0.1);
+        topEl.style.height = thin + 'px'; topEl.style.top = '0px';
+        botEl.style.height = thin + 'px'; botEl.style.top = '';
+        return;
+      }
       var minH = Math.round(window.innerHeight * 0.13);
       var topH = Math.max(minH, Math.round(vr.top - frr.top + vr.height * 0.5));
       var botTop = Math.max(0, Math.round(vr.bottom - frr.top - vr.height * 0.16));
